@@ -1,3 +1,6 @@
+use std::fs;
+use std::io;
+
 //prints out our data structure in tree-form
 fn pretty_print(){}
 
@@ -9,6 +12,9 @@ fn get_size(){}
 
 //creates an instance of the node struct we use for organization
 fn create_node(){}
+
+//return the number of objects present in a given directory
+fn dir_object_count(){}
 
 //get the contents of the given directory
 fn parse_dir(){}
