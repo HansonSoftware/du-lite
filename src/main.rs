@@ -1,6 +1,15 @@
 use std::fs;
 use std::io;
 
+struct Node {
+    is_dir: bool,
+    size: u32,
+    parent_index: u32,
+    child_start: u32,
+    child_end: u32,
+    name: String,
+}
+
 //prints out our data structure in tree-form
 fn pretty_print(){}
 
