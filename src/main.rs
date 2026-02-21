@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 struct Node {
     is_dir: bool,
-    size: u32,
+    size: u64,
     parent_index: u32,
     child_start: u32,
     child_end: u32,
@@ -20,22 +20,40 @@ fn pretty_print(){}
 fn convert_size(){}
 
 //gets the size of the given file or dir
-fn get_size(){}
+// fn get_size(){}
+//No longer needed, we can get this from metadata
 
 //creates an instance of the node struct we use for organization
-fn create_node(){}
+fn create_node(p: &PathBuf) ->Result<Node, std::io::Error>{
+
+    let f_name = p.file_name().unwrap();
+    let metadata = fs::metadata(p)?;
+
+    let new_node: Node = Node {
+        is_dir: p.is_dir(),
+        size: metadata.len(), //file's size in bytes
+        parent_index: 0, //placeholder
+        child_start: 0, //placeholder
+        child_end: 0, //placeholder
+        name: f_name.to_str().unwrap().to_string(),
+    };
+    Ok(new_node)
+}
 
 //return the number of objects present in a given directory
 fn dir_object_count(){}
 
 //get the contents of the given directory
-fn parse_dir(dir:PathBuf){
+fn parse_dir(dir:PathBuf) -> Result<(), std::io::Error> {
     let items = fs::read_dir(dir).unwrap();
     for item in items {
         //we can get the filename from the path, which of course we need to unwrap, but we can then display
-        println!("Name: {}", item.unwrap().path().file_name().unwrap().display())
+        //Have to pass in the PathBuf item as a pointer so that the create_node function can properly use it to create a metadata obj
+        let new_node: Node = create_node(&item.unwrap().path())?;
+        println!("Name: {}, Size: {}, is_dir {}", new_node.name, new_node.size, new_node.is_dir)
+        
     }
-
+    Ok(())
 }
 
 
@@ -62,7 +80,7 @@ fn main() -> Result<(), std::io::Error>{
 
     //Following that, lets try getting the contents of the dir and printing it out
     println!("CWD: {}", cwd.display());
-    parse_dir(cwd);
+    parse_dir(cwd)?;
 
     Ok(())
 }
